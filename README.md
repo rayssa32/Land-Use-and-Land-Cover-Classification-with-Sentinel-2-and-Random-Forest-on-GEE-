@@ -1,12 +1,21 @@
 # Land Use and Land Cover (LULC) Classification using Sentinel-2, WorldCover and Random Forest
 
-This repository contains a complete workflow for performing supervised land use and land cover (LULC) classification in **Google Earth Engine (GEE)**.  
-The method uses **Sentinel-2 imagery + spectral indices + Random Forest** and is automatically trained using **ESA WorldCover (2021)** data.
+## 🛰️ Overview
 
-The current implementation was developed for **7 municipalities in Brazil**, but the script is fully adaptable to any region with minimal changes.
+This repository provides a complete Google Earth Engine (GEE) script for supervised Land Use and Land Cover (LULC) classification using Sentinel-2 imagery.  
+The method integrates spectral band information, key vegetation/water/urban indices (NDVI, NDWI, NDBI), and a Random Forest classifier trained automatically using ESA WorldCover 2021.
+
+Unlike desktop-based classification workflows (e.g., SCP in QGIS), this approach:
+
+- requires **no manual band download or preprocessing**
+- generates training samples automatically (no digitizing polygons)
+- runs entirely in the cloud (no local RAM or CPU limitations)
+- supports multi-city classification in a single execution
+- ensures full reproducibility through scripted processing
+
+The current implementation is applied to 7 municipalities in Brazil, but the code is fully adaptable.
 
 ---
-
 ## Purpose of the Project
 
 The goal of this workflow is to automatically classify landscape elements such as:

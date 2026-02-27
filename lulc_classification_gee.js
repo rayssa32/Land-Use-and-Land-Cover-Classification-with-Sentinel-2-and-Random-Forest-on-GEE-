@@ -27,7 +27,7 @@ var S2 = 'COPERNICUS/S2_SR_HARMONIZED';
 var BANDS10 = ['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12'];
 
 // Color palette for classification results (0–4)
-var CLASS_PALETTE = ['#3b83bd','#8c8c8c','#c8a165','#2ca25f','#a1d99b'];
+var CLASS_PALETTE = ['#000000','#3b83bd','#8c8c8c','#c8a165','#2ca25f','#a1d99b'];
 
 // Enable or disable cloud masking based on SCL band
 var APPLY_CLOUD_MASK = true;
@@ -80,7 +80,7 @@ function autoSamples(geom) {
   var wc = ee.Image('ESA/WorldCover/v200/2021').clip(geom);
 
   var from = [10,20,30,40,50,60,70,80,90,95,100]; // ESA values
-  var to   = [ 3, 3, 4, 4, 1, 2, 3, 0, 3,  3,  3]; // Custom class remap
+  var to   = [4, 4, 5, 5, 2, 3, 4, 1, 4,  4,  4]; // Custom class remap
 
   var labeled = wc.remap(from, to).rename('class_auto');
 
@@ -140,10 +140,20 @@ for (var i = 0; i < n; i++) {
   var samples = autoSamples(geom);
   var clf = trainRF(comp, samples, inputBands, 'class_auto');
 
-  var lulc = comp.select(inputBands).classify(clf).rename('LULC').clip(geom);
+  var lulc = comp.select(inputBands).classify(clf).rename('LULC').clip(geom).unmask(0);
 
   Map.addLayer(comp.select(['B4', 'B3', 'B2']), {min: 0, max: 3000}, 'RGB - ' + name);
-  Map.addLayer(lulc, {min: 0, max: 4, palette: CLASS_PALETTE}, 'LULC - ' + name);
+  Map.addLayer(lulc, {min: 0, max: 5, palette: CLASS_PALETTE}, 'LULC - ' + name);
 }
+ Export.image.toDrive({
+  image: lulc,
+  description: 'LULC_7_cidades_20250710_20250730',
+  fileNamePrefix: 'LULC_7_cidades_2025-07',
+  region: geom,
+  scale: 10,
+  crs: 'EPSG:4326',
+  maxPixels: 1e13
+});
 
 /* ================== END ================== */
+
